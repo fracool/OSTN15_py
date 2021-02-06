@@ -1,10 +1,7 @@
 from math import cos, tan, sin, radians
 
-data = open('data.txt', 'r')
-lines = data.readlines()
 
-
-def get_line(line):
+def get_line(line, lines):
     my_line = lines[line]
     line_list = my_line.split(',')
     ns, es, ys = line_list[3], line_list[4], line_list[5]
@@ -13,23 +10,26 @@ def get_line(line):
 
 class Shift:
     def __init__(self, north, east):
-        self.north = int(north / 1000)
-        self.east = int(east / 1000)
-        self.s0 = get_line(self.east + (701 * self.north) + 1)
-        print(self.s0)
-        self.s1 = get_line(self.east + 1 + (701 * self.north) + 1)
-        print(self.s1)
-        self.s2 = get_line(self.east + 1 + (701 * (self.north + 1)) + 1)
-        print(self.s2)
-        self.s3 = get_line(self.east + (701 * (self.north + 1)) + 1)
-        print(self.s3)
-        self.dx = north - self.north * 1000
-        self.dy = east - self.east * 1000
-        self.t = self.dx / 1000
-        self.u = self.dy / 1000
+        with open('data.txt', 'r') as data:
+            lines = data.readlines()
+            self.north = int(north / 1000)
+            self.east = int(east / 1000)
+            self.s0 = get_line(self.east + (701 * self.north) + 1, lines)
+            print(self.s0)
+            self.s1 = get_line(self.east + 1 + (701 * self.north) + 1, lines)
+            print(self.s1)
+            self.s2 = get_line(self.east + 1 + (701 * (self.north + 1)) + 1, lines)
+            print(self.s2)
+            self.s3 = get_line(self.east + (701 * (self.north + 1)) + 1, lines)
+            print(self.s3)
+            self.dx = north - self.north * 1000
+            self.dy = east - self.east * 1000
+            self.t = self.dx / 1000
+            self.u = self.dy / 1000
 
 
 def gps_to_os(lat, lng):
+    """Function to convert GRS80 to OSGM15"""
     # Setting up our constants provided to us in the OSTN15 Resource
     A = 6378137.0000  # GRS80 Semi Major Axis
     B = 6356752.3141  # GRS80 Semi Minor Axis
@@ -140,15 +140,16 @@ def gps_to_os(lat, lng):
     print(n, end='')
     return e, n
 
+# EXAMPLE USE
+# INPUT_LAT = 50.178909
+# INPUT_LNG = 0.22556677
 
-INPUT_LAT = 50.178903
-INPUT_LNG = 0.22556677
 
-gps_to_os(INPUT_LAT, INPUT_LNG)
+# gps_to_os(INPUT_LAT, INPUT_LNG)
 
 
 #while True:
-    #print("\nFraser's implimentation of OSGM15 with mm accuracy. Select q to quit.")
+    #print("\nOSGM15 with mm accuracy. Select q to quit.")
     #usr_lat, usr_lng = input("enter Latitude and Longitude separated by a comma: ").split(',')
     #if usr_lat == 'q':
     #    break
