@@ -3,6 +3,7 @@ from math import cos, tan, sin, radians
 
 def get_line(line, lines):
     """Read the data from the line in the lines object."""
+
     my_line = lines[line]
     line_list = my_line.split(',')
     ns, es, ys = line_list[3], line_list[4], line_list[5]
@@ -11,6 +12,7 @@ def get_line(line, lines):
 
 class Shift:
     """Perform the shifts to get corrections to apply to our eastings & northings."""
+
     def __init__(self, north, east):
         with open('data.txt', 'r') as data:
             lines = data.readlines()
@@ -32,6 +34,7 @@ class Shift:
 
 def gps_to_os(lat, lng):
     """Convert GRS80 to OSGM15."""
+
     # Setting up our constants provided to us in the OSTN15 Resource
     A = 6378137.0000  # GRS80 Semi Major Axis
     B = 6356752.3141  # GRS80 Semi Minor Axis
@@ -143,11 +146,11 @@ def gps_to_os(lat, lng):
     return e, n
 
 # EXAMPLE USE
-# INPUT_LAT = 50.178909
-# INPUT_LNG = 0.22556677
+INPUT_LAT = 50.178909
+INPUT_LNG = 0.22556677
 
 
-# gps_to_os(INPUT_LAT, INPUT_LNG)
+gps_to_os(INPUT_LAT, INPUT_LNG)
 
 
 # while True:
