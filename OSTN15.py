@@ -2,7 +2,7 @@ from math import cos, tan, sin, radians
 
 
 def get_line(line, lines):
-    """Read the data from the line in the lines object."""
+    """Read the data from the OSTN15 data file, stored in the line object."""
 
     my_line = lines[line]
     line_list = my_line.split(',')
@@ -30,6 +30,14 @@ class Shift:
             self.dy = east - self.east * 1000
             self.t = self.dx / 1000
             self.u = self.dy / 1000
+
+    def se(self):
+        return (1 - self.t) * (1 - self.u) * self.s0[0] + self.t * (1 - self.u) * self.s1[0] + self.t * self.u * self.s2[0] + (
+                1 - self.t) * self.u * self.s3[0]
+
+    def sn(self):
+        return (1 - self.t) * (1 - self.u) * self.s0[1] + self.t * (1 - self.u) * self.s1[1] + self.t * self.u * self.s2[1] + (
+                1 - self.t) * self.u * self.s0[1]
 
 
 def gps_to_os(lat, lng):
@@ -131,13 +139,8 @@ def gps_to_os(lat, lng):
 
     sh = Shift(NORTH, EAST)  # Calculate shifts for each corner of the grid tile
 
-    se = (1 - sh.t) * (1 - sh.u) * sh.s0[0] + sh.t * (1 - sh.u) * sh.s1[0] + sh.t * sh.u * sh.s2[0] + (
-                1 - sh.t) * sh.u * sh.s3[0]
-    sn = (1 - sh.t) * (1 - sh.u) * sh.s0[1] + sh.t * (1 - sh.u) * sh.s1[1] + sh.t * sh.u * sh.s2[1] + (
-                1 - sh.t) * sh.u * sh.s0[1]
-
-    e = EAST + se
-    n = NORTH + sn
+    e = EAST + sh.se()  # Add shifted values
+    n = NORTH + sh.sn()
 
     print("Corrected East: ", end='')
     print(e, end='')
@@ -146,11 +149,11 @@ def gps_to_os(lat, lng):
     return e, n
 
 # EXAMPLE USE
-INPUT_LAT = 50.178909
-INPUT_LNG = 0.22556677
 
+# INPUT_LAT = 50.178909
+# INPUT_LNG = 0.22556677
 
-gps_to_os(INPUT_LAT, INPUT_LNG)
+# gps_to_os(INPUT_LAT, INPUT_LNG)
 
 
 # while True:
